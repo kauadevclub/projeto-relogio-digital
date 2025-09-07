@@ -1,4 +1,5 @@
 # ⏰ Relógio Digital do Kauã
+https://projetopessoalrelogiodigital.netlify.app/
 
 Um relógio digital moderno e funcional desenvolvido com **HTML, CSS e JavaScript**, que exibe a hora atual em tempo real.  
 Projeto criado para praticar interatividade, DOM e atualização dinâmica de elementos.  
