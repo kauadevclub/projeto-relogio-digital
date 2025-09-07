@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relógio Multifuncional</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Orbitron', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .digital-font {
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 2px;
+        }
+        
+        .tab-active {
+            border-bottom: 3px solid #3b82f6;
+            color: #3b82f6;
+        }
+        
+        .btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-active:active {
+            transform: translateY(0);
+        }
+        
+        .blink {
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col">
+    <div class="container mx-auto px-4 py-8 flex-1">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold mb-2 text-blue-400">Relógio Multifuncional</h1>
+            <p class="text-gray-400">Digital | Cronômetro | Timer</p>
+        </header>
+        
+        <div class="max-w-3xl mx-auto bg-gray-800 rounded-xl shadow-xl overflow-hidden">
+            <!-- Tabs Navigation -->
+            <div class="flex border-b border-gray-700">
+                <button id="clock-tab" class="flex-1 py-4 px-6 text-center font-medium tab-active">
+                    <i data-feather="clock" class="inline mr-2"></i> Relógio
+                </button>
+                <button id="stopwatch-tab" class="flex-1 py-4 px-6 text-center font-medium text-gray-400">
+                    <i data-feather="watch" class="inline mr-2"></i> Cronômetro
+                </button>
+                <button id="timer-tab" class="flex-1 py-4 px-6 text-center font-medium text-gray-400">
+                    <i data-feather="hourglass" class="inline mr-2"></i> Timer
+                </button>
+            </div>
+            
+            <!-- Tab Contents -->
+            <div class="p-6">
+                <!-- Clock Tab -->
+                <div id="clock-content" class="tab-content">
+                    <div class="text-center">
+                        <div id="current-time" class="text-5xl md:text-6xl font-bold mb-2 text-blue-400 digital-font"></div>
+                        <div id="current-date" class="text-xl text-gray-300"></div>
+                    </div>
+                </div>
+                
+                <!-- Stopwatch Tab -->
+                <div id="stopwatch-content" class="tab-content hidden">
+                    <div class="text-center">
+                        <div id="stopwatch-display" class="text-5xl md:text-6xl font-bold mb-6 text-green-400 digital-font">00:00:00.00</div>
+                        <div class="flex justify-center space-x-4">
+                            <button id="start-stopwatch" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg btn-hover btn-active transition">
+                                <i data-feather="play" class="inline mr-2"></i> Iniciar
+                            </button>
+                            <button id="pause-stopwatch" class="bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-lg btn-hover btn-active transition hidden">
+                                <i data-feather="pause" class="inline mr-2"></i> Pausar
+                            </button>
+                            <button id="reset-stopwatch" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg btn-hover btn-active transition">
+                                <i data-feather="rotate-ccw" class="inline mr-2"></i> Resetar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Timer Tab -->
+                <div id="timer-content" class="tab-content hidden">
+                    <div class="text-center">
+                        <div class="flex justify-center mb-8 space-x-4">
+                            <div class="flex flex-col items-center">
+                                <label class="text-gray-400 mb-2">Horas</label>
+                                <input type="number" id="timer-hours" min="0" max="23" value="0" class="bg-gray-700 text-white text-center w-16 py-2 rounded">
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <label class="text-gray-400 mb-2">Minutos</label>
+                                <input type="number" id="timer-minutes" min="0" max="59" value="0" class="bg-gray-700 text-white text-center w-16 py-2 rounded">
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <label class="text-gray-400 mb-2">Segundos</label>
+                                <input type="number" id="timer-seconds" min="0" max="59" value="10" class="bg-gray-700 text-white text-center w-16 py-2 rounded">
+                            </div>
+                        </div>
+                        
+                        <div id="timer-display" class="text-5xl md:text-6xl font-bold mb-6 text-purple-400 digital-font">00:00:10</div>
+                        
+                        <div class="flex justify-center space-x-4">
+                            <button id="start-timer" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg btn-hover btn-active transition">
+                                <i data-feather="play" class="inline mr-2"></i> Iniciar
+                            </button>
+                            <button id="pause-timer" class="bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-lg btn-hover btn-active transition hidden">
+                                <i data-feather="pause" class="inline mr-2"></i> Pausar
+                            </button>
+                            <button id="reset-timer" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg btn-hover btn-active transition">
+                                <i data-feather="rotate-ccw" class="inline mr-2"></i> Resetar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="text-center py-4 text-gray-500 text-sm">
+        <p>Relógio Multifuncional © 2023 | Desenvolvido com HTML, CSS e JavaScript</p>
+    </footer>
+    
+    <audio id="timer-alarm" src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" preload="auto"></audio>
+    
+    <script>
+        // Initialize AOS and Feather Icons
+        AOS.init();
+        feather.replace();
+        
+        // Tab Switching Functionality
+        const tabs = {
+            'clock-tab': document.getElementById('clock-content'),
+            'stopwatch-tab': document.getElementById('stopwatch-content'),
+            'timer-tab': document.getElementById('timer-content')
+        };
+        
+        Object.keys(tabs).forEach(tabId => {
+            document.getElementById(tabId).addEventListener('click', () => {
+                // Hide all tab contents
+                Object.values(tabs).forEach(content => content.classList.add('hidden'));
+                
+                // Show selected tab content
+                tabs[tabId].classList.remove('hidden');
+                
+                // Update active tab styling
+                document.querySelectorAll('[id$="-tab"]').forEach(tab => {
+                    tab.classList.remove('tab-active');
+                    tab.classList.add('text-gray-400');
+                });
+                
+                document.getElementById(tabId).classList.add('tab-active');
+                document.getElementById(tabId).classList.remove('text-gray-400');
+            });
+        });
+        
+        // Clock Functionality
+        function updateClock() {
+            const now = new Date();
+            
+            // Format time
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}`;
+            
+            // Format date
+            const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+            const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            const dayName = days[now.getDay()];
+            const day = now.getDate();
+            const monthName = months[now.getMonth()];
+            const year = now.getFullYear();
+            document.getElementById('current-date').textContent = `${dayName}, ${day} de ${monthName} de ${year}`;
+        }
+        
+        setInterval(updateClock, 1000);
+        updateClock(); // Initial call
+        
+        // Stopwatch Functionality
+        let stopwatchInterval;
+        let stopwatchStartTime;
+        let stopwatchElapsedTime = 0;
+        let stopwatchRunning = false;
+        
+        function formatStopwatchTime(ms) {
+            const date = new Date(ms);
+            const hours = date.getUTCHours().toString().padStart(2, '0');
+            const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+            const seconds = date.getUTCSeconds().toString().padStart(2, '0');
+            const milliseconds = Math.floor(date.getUTCMilliseconds() / 10).toString().padStart(2, '0');
+            return `${hours}:${minutes}:${seconds}.${milliseconds}`;
+        }
+        
+        function updateStopwatchDisplay() {
+            const currentTime = stopwatchRunning ? Date.now() - stopwatchStartTime + stopwatchElapsedTime : stopwatchElapsedTime;
+            document.getElementById('stopwatch-display').textContent = formatStopwatchTime(currentTime);
+        }
+        
+        document.getElementById('start-stopwatch').addEventListener('click', () => {
+            if (!stopwatchRunning) {
+                stopwatchStartTime = Date.now();
+                stopwatchInterval = setInterval(updateStopwatchDisplay, 10);
+                stopwatchRunning = true;
+                
+                document.getElementById('start-stopwatch').classList.add('hidden');
+                document.getElementById('pause-stopwatch').classList.remove('hidden');
+            }
+        });
+        
+        document.getElementById('pause-stopwatch').addEventListener('click', () => {
+            if (stopwatchRunning) {
+                clearInterval(stopwatchInterval);
+                stopwatchElapsedTime += Date.now() - stopwatchStartTime;
+                stopwatchRunning = false;
+                
+                document.getElementById('start-stopwatch').classList.remove('hidden');
+                document.getElementById('pause-stopwatch').classList.add('hidden');
+            }
+        });
+        
+        document.getElementById('reset-stopwatch').addEventListener('click', () => {
+            clearInterval(stopwatchInterval);
+            stopwatchElapsedTime = 0;
+            stopwatchRunning = false;
+            updateStopwatchDisplay();
+            
+            document.getElementById('start-stopwatch').classList.remove('hidden');
+            document.getElementById('pause-stopwatch').classList.add('hidden');
+        });
+        
+        // Timer Functionality
+        let timerInterval;
+        let timerEndTime;
+        let timerRemainingTime = 0;
+        let timerRunning = false;
+        
+        function formatTimerTime(ms) {
+            const date = new Date(ms);
+            const hours = date.getUTCHours().toString().padStart(2, '0');
+            const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+            const seconds = date.getUTCSeconds().toString().padStart(2, '0');
+            return `${hours}:${minutes}:${seconds}`;
+        }
+        
+        function updateTimerDisplay() {
+            const currentTime = timerRunning ? timerEndTime - Date.now() : timerRemainingTime;
+            
+            if (currentTime <= 0) {
+                clearInterval(timerInterval);
+                document.getElementById('timer-display').textContent = "00:00:00";
+                document.getElementById('timer-display').classList.add('blink');
+                document.getElementById('timer-alarm').play();
+                
+                document.getElementById('start-timer').classList.remove('hidden');
+                document.getElementById('pause-timer').classList.add('hidden');
+                timerRunning = false;
+                
+                // Reset after alarm
+                setTimeout(() => {
+                    document.getElementById('timer-display').classList.remove('blink');
+                }, 5000);
+                return;
+            }
+            
+            document.getElementById('timer-display').textContent = formatTimerTime(currentTime);
+        }
+        
+        function getTimerInputTime() {
+            const hours = parseInt(document.getElementById('timer-hours').value) || 0;
+            const minutes = parseInt(document.getElementById('timer-minutes').value) || 0;
+            const seconds = parseInt(document.getElementById('timer-seconds').value) || 0;
+            
+            return (hours * 3600 + minutes * 60 + seconds) * 1000;
+        }
+        
+        document.getElementById('start-timer').addEventListener('click', () => {
+            if (!timerRunning) {
+                timerRemainingTime = getTimerInputTime();
+                
+                if (timerRemainingTime <= 0) return;
+                
+                timerEndTime = Date.now() + timerRemainingTime;
+                timerInterval = setInterval(updateTimerDisplay, 100);
+                timerRunning = true;
+                
+                document.getElementById('start-timer').classList.add('hidden');
+                document.getElementById('pause-timer').classList.remove('hidden');
+            }
+        });
+        
+        document.getElementById('pause-timer').addEventListener('click', () => {
+            if (timerRunning) {
+                clearInterval(timerInterval);
+                timerRemainingTime = timerEndTime - Date.now();
+                timerRunning = false;
+                
+                document.getElementById('start-timer').classList.remove('hidden');
+                document.getElementById('pause-timer').classList.add('hidden');
+            }
+        });
+        
+        document.getElementById('reset-timer').addEventListener('click', () => {
+            clearInterval(timerInterval);
+            timerRemainingTime = getTimerInputTime();
+            timerRunning = false;
+            updateTimerDisplay();
+            
+            document.getElementById('timer-display').classList.remove('blink');
+            document.getElementById('start-timer').classList.remove('hidden');
+            document.getElementById('pause-timer').classList.add('hidden');
+        });
+        
+        // Input validation for timer
+        document.querySelectorAll('#timer-content input').forEach(input => {
+            input.addEventListener('change', function() {
+                const max = parseInt(this.max);
+                const min = parseInt(this.min);
+                let value = parseInt(this.value) || 0;
+                
+                if (value > max) this.value = max;
+                if (value < min) this.value = min;
+                
+                // Update display when inputs change
+                if (!timerRunning) {
+                    timerRemainingTime = getTimerInputTime();
+                    updateTimerDisplay();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
